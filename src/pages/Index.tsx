@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
@@ -10,44 +10,65 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion';
+import AdminPanel from '@/components/AdminPanel';
 
-const westTeams = [
-  { name: 'ЦСКА', city: 'Москва', emoji: '⭐', wins: 0, losses: 0, otl: 0, points: 0 },
-  { name: 'СКА', city: 'Санкт-Петербург', emoji: '⭐', wins: 0, losses: 0, otl: 0, points: 0 },
-  { name: 'Динамо', city: 'Москва', emoji: '🔵', wins: 0, losses: 0, otl: 0, points: 0 },
-  { name: 'Спартак', city: 'Москва', emoji: '🔴', wins: 0, losses: 0, otl: 0, points: 0 },
-  { name: 'Локомотив', city: 'Ярославль', emoji: '🚂', wins: 0, losses: 0, otl: 0, points: 0 },
-  { name: 'Лада', city: 'Тольятти', emoji: '🦅', wins: 0, losses: 0, otl: 0, points: 0 },
-  { name: 'Торпедо', city: 'Нижний Новгород', emoji: '🦌', wins: 0, losses: 0, otl: 0, points: 0 },
-  { name: 'Сочи', city: 'Сочи', emoji: '🐆', wins: 0, losses: 0, otl: 0, points: 0 },
-  { name: 'Шанхай Драгонс', city: 'Шанхай', emoji: '🐉', wins: 0, losses: 0, otl: 0, points: 0 },
-  { name: 'Северсталь', city: 'Череповец', emoji: '🟡', wins: 0, losses: 0, otl: 0, points: 0 },
-  { name: 'Динамо', city: 'Минск', emoji: '🐃', wins: 0, losses: 0, otl: 0, points: 0 },
-];
+interface Team {
+  id: number;
+  name: string;
+  city: string;
+  emoji: string;
+  conference: string;
+  wins: number;
+  losses: number;
+  otl: number;
+  points: number;
+  badge?: string;
+}
 
-const eastTeams = [
-  { name: 'Акбарс', city: 'Казань', emoji: '🐱', wins: 0, losses: 0, otl: 0, points: 0, badge: '🏆🥇' },
-  { name: 'Металлург', city: 'Магнитогорск', emoji: '🦊', wins: 0, losses: 0, otl: 0, points: 0 },
-  { name: 'Трактор', city: 'Челябинск', emoji: '🐻‍❄️', wins: 0, losses: 0, otl: 0, points: 0 },
-  { name: 'Авангард', city: 'Омск', emoji: '🦅', wins: 0, losses: 0, otl: 0, points: 0 },
-  { name: 'Салават Юлаев', city: 'Уфа', emoji: '🍯', wins: 0, losses: 0, otl: 0, points: 0 },
-  { name: 'Нефтехимик', city: 'Нижнекамск', emoji: '🐺', wins: 0, losses: 0, otl: 0, points: 0 },
-  { name: 'Сибирь', city: 'Новосибирск', emoji: '❄️', wins: 0, losses: 0, otl: 0, points: 0 },
-  { name: 'Автомобилист', city: 'Екатеринбург', emoji: '🚘', wins: 0, losses: 0, otl: 0, points: 0 },
-  { name: 'Амур', city: 'Хабаровск', emoji: '🐅', wins: 0, losses: 0, otl: 0, points: 0 },
-  { name: 'Барыс', city: 'Астана', emoji: '🐱', wins: 0, losses: 0, otl: 0, points: 0 },
-  { name: 'Адмирал', city: 'Владивосток', emoji: '⚓', wins: 0, losses: 0, otl: 0, points: 0, badge: '🥉' },
-];
-
-const upcomingMatches = [
-  { home: 'ЦСКА ⭐', away: 'Акбарс 🐱', date: '15 октября', time: '19:00' },
-  { home: 'СКА ⭐', away: 'Металлург 🦊', date: '15 октября', time: '19:30' },
-  { home: 'Динамо 🔵', away: 'Трактор 🐻‍❄️', date: '16 октября', time: '19:00' },
-  { home: 'Спартак 🔴', away: 'Авангард 🦅', date: '16 октября', time: '19:30' },
-];
+interface Match {
+  id: number;
+  home_team: { id: number; name: string; emoji: string };
+  away_team: { id: number; name: string; emoji: string };
+  home_score: number | null;
+  away_score: number | null;
+  date: string;
+  time: string;
+  status: string;
+}
 
 const Index = () => {
   const [activeSection, setActiveSection] = useState('home');
+  const [westTeams, setWestTeams] = useState<Team[]>([]);
+  const [eastTeams, setEastTeams] = useState<Team[]>([]);
+  const [upcomingMatches, setUpcomingMatches] = useState<Match[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [teamsRes, matchesRes] = await Promise.all([
+          fetch('https://functions.poehali.dev/1bc0acb2-8632-423e-b78e-4ff5de91f6c3'),
+          fetch('https://functions.poehali.dev/5350980f-fc68-4e4f-8ec8-0229b88d844e'),
+        ]);
+        
+        const teamsData = await teamsRes.json();
+        const matchesData = await matchesRes.json();
+        
+        const west = teamsData.teams.filter((t: Team) => t.conference === 'west');
+        const east = teamsData.teams.filter((t: Team) => t.conference === 'east');
+        
+        setWestTeams(west);
+        setEastTeams(east);
+        setUpcomingMatches(matchesData.matches.filter((m: Match) => m.status === 'scheduled'));
+      } catch (error) {
+        console.error('Failed to fetch data:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    fetchData();
+  }, []);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary via-primary to-accent">
@@ -59,7 +80,7 @@ const Index = () => {
               <h1 className="text-xl md:text-2xl font-bold text-white">СХЛ</h1>
             </div>
             <div className="hidden md:flex gap-6">
-              {['home', 'standings', 'rules', 'schedule', 'contacts'].map((section) => (
+              {['home', 'standings', 'rules', 'schedule', 'admin', 'contacts'].map((section) => (
                 <button
                   key={section}
                   onClick={() => setActiveSection(section)}
@@ -73,6 +94,7 @@ const Index = () => {
                   {section === 'standings' && 'Турнирная таблица'}
                   {section === 'rules' && 'Правила'}
                   {section === 'schedule' && 'Расписание'}
+                  {section === 'admin' && 'Админ-панель'}
                   {section === 'contacts' && 'Контакты'}
                 </button>
               ))}
@@ -82,7 +104,7 @@ const Index = () => {
               size="icon"
               className="md:hidden text-white"
               onClick={() => {
-                const sections = ['home', 'standings', 'rules', 'schedule', 'contacts'];
+                const sections = ['home', 'standings', 'rules', 'schedule', 'admin', 'contacts'];
                 const currentIndex = sections.indexOf(activeSection);
                 const nextIndex = (currentIndex + 1) % sections.length;
                 setActiveSection(sections[nextIndex]);
@@ -95,7 +117,11 @@ const Index = () => {
       </nav>
 
       <main className="container mx-auto px-4 py-8">
-        {activeSection === 'home' && (
+        {loading ? (
+          <div className="flex items-center justify-center py-20">
+            <div className="text-white text-xl">Загрузка...</div>
+          </div>
+        ) : activeSection === 'home' && (
           <div className="space-y-8 animate-fade-in">
             <div className="text-center py-12 md:py-20">
               <div className="text-6xl md:text-8xl mb-6">🏒</div>
@@ -107,51 +133,53 @@ const Index = () => {
               </p>
             </div>
 
-            <div className="grid md:grid-cols-2 gap-6">
-              <Card className="bg-white/95 backdrop-blur-sm border-0 shadow-xl hover-scale">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Icon name="Trophy" className="text-secondary" size={24} />
-                    Лидер Запада
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex items-center gap-4">
-                    <div className="text-5xl">{westTeams[0].emoji}</div>
-                    <div>
-                      <h3 className="text-2xl font-bold">{westTeams[0].name}</h3>
-                      <p className="text-muted-foreground">{westTeams[0].city}</p>
-                      <div className="flex gap-2 mt-2">
-                        <Badge variant="secondary">{westTeams[0].points} очков</Badge>
-                        <Badge variant="outline">{westTeams[0].wins}-{westTeams[0].losses}</Badge>
+            {westTeams.length > 0 && eastTeams.length > 0 && (
+              <div className="grid md:grid-cols-2 gap-6">
+                <Card className="bg-white/95 backdrop-blur-sm border-0 shadow-xl hover-scale">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Icon name="Trophy" className="text-secondary" size={24} />
+                      Лидер Запада
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="flex items-center gap-4">
+                      <div className="text-5xl">{westTeams[0].emoji}</div>
+                      <div>
+                        <h3 className="text-2xl font-bold">{westTeams[0].name}</h3>
+                        <p className="text-muted-foreground">{westTeams[0].city}</p>
+                        <div className="flex gap-2 mt-2">
+                          <Badge variant="secondary">{westTeams[0].points} очков</Badge>
+                          <Badge variant="outline">{westTeams[0].wins}-{westTeams[0].losses}</Badge>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </CardContent>
-              </Card>
+                  </CardContent>
+                </Card>
 
-              <Card className="bg-white/95 backdrop-blur-sm border-0 shadow-xl hover-scale">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Icon name="Trophy" className="text-secondary" size={24} />
-                    Лидер Востока
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex items-center gap-4">
-                    <div className="text-5xl">{eastTeams[0].emoji}</div>
-                    <div>
-                      <h3 className="text-2xl font-bold">{eastTeams[0].name} {eastTeams[0].badge}</h3>
-                      <p className="text-muted-foreground">{eastTeams[0].city}</p>
-                      <div className="flex gap-2 mt-2">
-                        <Badge variant="secondary">{eastTeams[0].points} очков</Badge>
-                        <Badge variant="outline">{eastTeams[0].wins}-{eastTeams[0].losses}</Badge>
+                <Card className="bg-white/95 backdrop-blur-sm border-0 shadow-xl hover-scale">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Icon name="Trophy" className="text-secondary" size={24} />
+                      Лидер Востока
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="flex items-center gap-4">
+                      <div className="text-5xl">{eastTeams[0].emoji}</div>
+                      <div>
+                        <h3 className="text-2xl font-bold">{eastTeams[0].name} {eastTeams[0].badge}</h3>
+                        <p className="text-muted-foreground">{eastTeams[0].city}</p>
+                        <div className="flex gap-2 mt-2">
+                          <Badge variant="secondary">{eastTeams[0].points} очков</Badge>
+                          <Badge variant="outline">{eastTeams[0].wins}-{eastTeams[0].losses}</Badge>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
+                  </CardContent>
+                </Card>
+              </div>
+            )}
           </div>
         )}
 
@@ -368,8 +396,8 @@ const Index = () => {
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">Расписание матчей</h2>
             
             <div className="grid gap-4">
-              {upcomingMatches.map((match, index) => (
-                <Card key={index} className="bg-white/95 backdrop-blur-sm border-0 shadow-xl hover-scale">
+              {upcomingMatches.map((match) => (
+                <Card key={match.id} className="bg-white/95 backdrop-blur-sm border-0 shadow-xl hover-scale">
                   <CardContent className="p-6">
                     <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                       <div className="flex items-center gap-4 flex-1">
@@ -379,11 +407,11 @@ const Index = () => {
                         </div>
                         <div className="flex items-center gap-3 flex-1">
                           <div className="text-right flex-1">
-                            <div className="font-semibold text-lg">{match.home}</div>
+                            <div className="font-semibold text-lg">{match.home_team.emoji} {match.home_team.name}</div>
                           </div>
                           <div className="text-2xl font-bold text-muted-foreground">VS</div>
                           <div className="text-left flex-1">
-                            <div className="font-semibold text-lg">{match.away}</div>
+                            <div className="font-semibold text-lg">{match.away_team.name} {match.away_team.emoji}</div>
                           </div>
                         </div>
                       </div>
@@ -396,6 +424,13 @@ const Index = () => {
                 </Card>
               ))}
             </div>
+          </div>
+        )}
+
+        {activeSection === 'admin' && (
+          <div className="space-y-6 animate-fade-in max-w-6xl mx-auto">
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">Админ-панель</h2>
+            <AdminPanel />
           </div>
         )}
 

@@ -1,0 +1,5 @@
+{
+  "get-teams": "https://functions.poehali.dev/1bc0acb2-8632-423e-b78e-4ff5de91f6c3",
+  "update-match": "https://functions.poehali.dev/a7a845c8-b5c9-40b2-bc59-06c6442b914e",
+  "get-matches": "https://functions.poehali.dev/5350980f-fc68-4e4f-8ec8-0229b88d844e"
+}

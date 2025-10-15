@@ -1,0 +1,14 @@
+{
+  "tests": [
+    {
+      "name": "Get all teams",
+      "method": "GET",
+      "path": "/",
+      "expectedStatus": 200,
+      "expectedBody": {
+        "teams": "array"
+      },
+      "bodyMatcher": "partial"
+    }
+  ]
+}
