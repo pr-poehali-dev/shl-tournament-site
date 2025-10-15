@@ -12,31 +12,31 @@ import {
 } from '@/components/ui/accordion';
 
 const westTeams = [
-  { name: 'ЦСКА', city: 'Москва', emoji: '⭐', wins: 42, losses: 18, otl: 5, points: 89 },
-  { name: 'СКА', city: 'Санкт-Петербург', emoji: '⭐', wins: 40, losses: 20, otl: 5, points: 85 },
-  { name: 'Динамо', city: 'Москва', emoji: '🔵', wins: 38, losses: 22, otl: 5, points: 81 },
-  { name: 'Спартак', city: 'Москва', emoji: '🔴', wins: 36, losses: 24, otl: 5, points: 77 },
-  { name: 'Локомотив', city: 'Ярославль', emoji: '🚂', wins: 34, losses: 26, otl: 5, points: 73 },
-  { name: 'Лада', city: 'Тольятти', emoji: '🦅', wins: 32, losses: 28, otl: 5, points: 69 },
-  { name: 'Торпедо', city: 'Нижний Новгород', emoji: '🦌', wins: 30, losses: 30, otl: 5, points: 65 },
-  { name: 'Сочи', city: 'Сочи', emoji: '🐆', wins: 28, losses: 32, otl: 5, points: 61 },
-  { name: 'Шанхай Драгонс', city: 'Шанхай', emoji: '🐉', wins: 26, losses: 34, otl: 5, points: 57 },
-  { name: 'Северсталь', city: 'Череповец', emoji: '🟡', wins: 24, losses: 36, otl: 5, points: 53 },
-  { name: 'Динамо', city: 'Минск', emoji: '🐃', wins: 22, losses: 38, otl: 5, points: 49 },
+  { name: 'ЦСКА', city: 'Москва', emoji: '⭐', wins: 0, losses: 0, otl: 0, points: 0 },
+  { name: 'СКА', city: 'Санкт-Петербург', emoji: '⭐', wins: 0, losses: 0, otl: 0, points: 0 },
+  { name: 'Динамо', city: 'Москва', emoji: '🔵', wins: 0, losses: 0, otl: 0, points: 0 },
+  { name: 'Спартак', city: 'Москва', emoji: '🔴', wins: 0, losses: 0, otl: 0, points: 0 },
+  { name: 'Локомотив', city: 'Ярославль', emoji: '🚂', wins: 0, losses: 0, otl: 0, points: 0 },
+  { name: 'Лада', city: 'Тольятти', emoji: '🦅', wins: 0, losses: 0, otl: 0, points: 0 },
+  { name: 'Торпедо', city: 'Нижний Новгород', emoji: '🦌', wins: 0, losses: 0, otl: 0, points: 0 },
+  { name: 'Сочи', city: 'Сочи', emoji: '🐆', wins: 0, losses: 0, otl: 0, points: 0 },
+  { name: 'Шанхай Драгонс', city: 'Шанхай', emoji: '🐉', wins: 0, losses: 0, otl: 0, points: 0 },
+  { name: 'Северсталь', city: 'Череповец', emoji: '🟡', wins: 0, losses: 0, otl: 0, points: 0 },
+  { name: 'Динамо', city: 'Минск', emoji: '🐃', wins: 0, losses: 0, otl: 0, points: 0 },
 ];
 
 const eastTeams = [
-  { name: 'Акбарс', city: 'Казань', emoji: '🐱', wins: 44, losses: 16, otl: 5, points: 93, badge: '🏆🥇' },
-  { name: 'Металлург', city: 'Магнитогорск', emoji: '🦊', wins: 42, losses: 18, otl: 5, points: 89 },
-  { name: 'Трактор', city: 'Челябинск', emoji: '🐻‍❄️', wins: 40, losses: 20, otl: 5, points: 85 },
-  { name: 'Авангард', city: 'Омск', emoji: '🦅', wins: 38, losses: 22, otl: 5, points: 81 },
-  { name: 'Салават Юлаев', city: 'Уфа', emoji: '🍯', wins: 36, losses: 24, otl: 5, points: 77 },
-  { name: 'Нефтехимик', city: 'Нижнекамск', emoji: '🐺', wins: 34, losses: 26, otl: 5, points: 73 },
-  { name: 'Сибирь', city: 'Новосибирск', emoji: '❄️', wins: 32, losses: 28, otl: 5, points: 69 },
-  { name: 'Автомобилист', city: 'Екатеринбург', emoji: '🚘', wins: 30, losses: 30, otl: 5, points: 65 },
-  { name: 'Амур', city: 'Хабаровск', emoji: '🐅', wins: 28, losses: 32, otl: 5, points: 61 },
-  { name: 'Барыс', city: 'Астана', emoji: '🐱', wins: 26, losses: 34, otl: 5, points: 57 },
-  { name: 'Адмирал', city: 'Владивосток', emoji: '⚓', wins: 24, losses: 36, otl: 5, points: 53, badge: '🥉' },
+  { name: 'Акбарс', city: 'Казань', emoji: '🐱', wins: 0, losses: 0, otl: 0, points: 0, badge: '🏆🥇' },
+  { name: 'Металлург', city: 'Магнитогорск', emoji: '🦊', wins: 0, losses: 0, otl: 0, points: 0 },
+  { name: 'Трактор', city: 'Челябинск', emoji: '🐻‍❄️', wins: 0, losses: 0, otl: 0, points: 0 },
+  { name: 'Авангард', city: 'Омск', emoji: '🦅', wins: 0, losses: 0, otl: 0, points: 0 },
+  { name: 'Салават Юлаев', city: 'Уфа', emoji: '🍯', wins: 0, losses: 0, otl: 0, points: 0 },
+  { name: 'Нефтехимик', city: 'Нижнекамск', emoji: '🐺', wins: 0, losses: 0, otl: 0, points: 0 },
+  { name: 'Сибирь', city: 'Новосибирск', emoji: '❄️', wins: 0, losses: 0, otl: 0, points: 0 },
+  { name: 'Автомобилист', city: 'Екатеринбург', emoji: '🚘', wins: 0, losses: 0, otl: 0, points: 0 },
+  { name: 'Амур', city: 'Хабаровск', emoji: '🐅', wins: 0, losses: 0, otl: 0, points: 0 },
+  { name: 'Барыс', city: 'Астана', emoji: '🐱', wins: 0, losses: 0, otl: 0, points: 0 },
+  { name: 'Адмирал', city: 'Владивосток', emoji: '⚓', wins: 0, losses: 0, otl: 0, points: 0, badge: '🥉' },
 ];
 
 const upcomingMatches = [
